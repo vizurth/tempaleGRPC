@@ -39,8 +39,8 @@ func (s *Service) GetOrder(ctx context.Context, req *test.GetOrderRequest) (*tes
 	order, ok := store[req.Id]
 	mu.Unlock()
 	if !ok {
-		logger.GetLoggerFromCtx(ctx).Info(ctx, "order not found", zap.String("id", req.Id))
-		return &test.GetOrderResponse{Order: nil}, fmt.Errorf("order not found")
+		logger.GetLoggerFromCtx(ctx).Error(ctx, "order not found in GetOrder", zap.String("id", req.Id))
+		return &test.GetOrderResponse{Order: nil}, fmt.Errorf("order not found: GetOrder\n")
 	}
 	logger.GetLoggerFromCtx(ctx).Info(ctx, "GetOrder called", zap.String("id", req.Id))
 	return &test.GetOrderResponse{Order: &order}, nil
@@ -51,8 +51,8 @@ func (s *Service) UpdateOrder(ctx context.Context, req *test.UpdateOrderRequest)
 	order, ok := store[req.Id]
 	defer mu.Unlock()
 	if !ok {
-		logger.GetLoggerFromCtx(ctx).Info(ctx, "order not found", zap.String("id", req.Id))
-		return &test.UpdateOrderResponse{Order: nil}, fmt.Errorf("order not found")
+		logger.GetLoggerFromCtx(ctx).Error(ctx, "order not found in UpdateOrder", zap.String("id", req.Id))
+		return &test.UpdateOrderResponse{Order: nil}, fmt.Errorf("order not found UpdateOrder\n")
 	}
 	logger.GetLoggerFromCtx(ctx).Info(ctx, "UpdateOrder called", zap.String("id", req.Id))
 	order.Item = req.Item
@@ -68,8 +68,8 @@ func (s *Service) DeleteOrder(ctx context.Context, req *test.DeleteOrderRequest)
 	_, ok := store[req.Id]
 	defer mu.Unlock()
 	if !ok {
-		logger.GetLoggerFromCtx(ctx).Info(ctx, "order not found", zap.String("id", req.Id))
-		return &test.DeleteOrderResponse{Success: false}, fmt.Errorf("order not found")
+		logger.GetLoggerFromCtx(ctx).Error(ctx, "order not found in DeleteOrder", zap.String("id", req.Id))
+		return &test.DeleteOrderResponse{Success: false}, fmt.Errorf("order not found DeleteOrder\n")
 	}
 	delete(store, req.Id)
 	logger.GetLoggerFromCtx(ctx).Info(ctx, "DeleteOrder called", zap.String("id", req.Id))
