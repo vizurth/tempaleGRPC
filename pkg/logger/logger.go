@@ -3,7 +3,6 @@ package logger
 import (
 	"context"
 	"go.uber.org/zap"
-	"google.golang.org/grpc"
 )
 
 const (
@@ -33,16 +32,4 @@ func (l *Logger) Info(ctx context.Context, msg string, fields ...zap.Field) {
 		fields = append(fields, zap.String(RequestID, ctx.Value(RequestID).(string))) // добавляем в логгер requestID
 	}
 	l.l.Info(msg, fields...)
-}
-
-func (l *Logger) addLogMiddleware(
-	ctx context.Context,
-	req interface{},
-	info *grpc.UnaryServerInfo,
-	handler grpc.UnaryHandler,
-) (interface{}, error) {
-	ctx, _ = New(ctx)
-	reply, err := handler(ctx, req)
-	l.l.Info("gRPC top-level log demonstration!")
-	return reply, err
 }
